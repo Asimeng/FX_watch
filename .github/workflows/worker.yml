@@ -1,0 +1,62 @@
+# The background worker. Streamlit only serves pages; this job fetches rates, evaluates
+# alerts and sends emails on a schedule, whether or not anyone has the app open.
+#
+# Required repository secrets (Settings → Secrets and variables → Actions):
+#   DATABASE_URL    hosted Postgres URL (same one the Streamlit app uses)
+#   SECRET_KEY      same value as the Streamlit app (signs links in emails)
+#   APP_BASE_URL    public URL of the Streamlit app, e.g. https://fxwatch.streamlit.app
+#   SMTP_USERNAME   Gmail address used to send
+#   SMTP_PASSWORD   Gmail app password (not your normal password)
+# Optional: MAIL_FROM (defaults to SMTP_USERNAME)
+
+name: Worker
+
+on:
+  schedule:
+    - cron: "17 * * * 1-5"   # hourly on weekdays
+    - cron: "17 */6 * * 0,6" # every 6 hours at weekends (aggregators still publish)
+    - cron: "25 15 * * 1-5"  # shortly after the ECB's ~16:00 CET publication
+  workflow_dispatch:
+
+concurrency:
+  group: fxwatch-worker
+  cancel-in-progress: false
+
+permissions:
+  contents: read
+  actions: write # used by the keep-alive step below
+
+jobs:
+  run:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    env:
+      ENVIRONMENT: production
+      LOG_FORMAT: json
+      MAIL_BACKEND: smtp
+      DATABASE_URL: ${{ secrets.DATABASE_URL }}
+      SECRET_KEY: ${{ secrets.SECRET_KEY }}
+      APP_BASE_URL: ${{ secrets.APP_BASE_URL }}
+      SMTP_USERNAME: ${{ secrets.SMTP_USERNAME }}
+      SMTP_PASSWORD: ${{ secrets.SMTP_PASSWORD }}
+      MAIL_FROM: ${{ secrets.MAIL_FROM }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+          cache: pip
+      - name: Install
+        run: pip install .
+      - name: Check configuration
+        run: python -m fxwatch check-config
+      - name: Run worker pass
+        run: python -m fxwatch run-once
+
+      # GitHub disables scheduled workflows in repositories with no activity for 60 days.
+      # Re-enabling the workflow through the API resets that timer without dummy commits.
+      - name: Keep schedule alive
+        if: github.event_name == 'schedule'
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: gh api -X PUT "repos/${{ github.repository }}/actions/workflows/worker.yml/enable" || true

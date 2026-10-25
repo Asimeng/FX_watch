@@ -1,0 +1,20 @@
+{% extends "_layout.html" %}
+{% from "_button.html" import button %}
+{% block body %}
+<h1 style="font-size:20px;margin:0 0 14px;">{{ "Your new management link" if rotated else "Manage your rate alerts" }}</h1>
+<p style="margin:0 0 12px;">
+  {% if rotated %}Your previous links no longer work. Use this one from now on.{% else %}Use this private link to view, pause, edit or delete your alerts. No password needed.{% endif %}
+</p>
+{{ button(manage_url, "Open my alerts") }}
+{% if alerts %}
+<table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="font-size:14px;border-top:1px solid #e3e7ee;">
+  {% for a in alerts %}
+  <tr>
+    <td style="padding:8px 0;border-bottom:1px solid #e3e7ee;">{{ a.base.flag }} <strong>{{ a.pair }}</strong> {{ a.condition }} {{ a.threshold }}</td>
+    <td style="padding:8px 0;border-bottom:1px solid #e3e7ee;text-align:right;color:#6b7385;">{{ a.status }}</td>
+  </tr>
+  {% endfor %}
+</table>
+{% endif %}
+<p style="margin:16px 0 0;color:#6b7385;font-size:13px;">Keep this link private: anyone with it can manage your alerts. You can replace it at any time from the management page.</p>
+{% endblock %}

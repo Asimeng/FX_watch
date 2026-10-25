@@ -1,0 +1,17 @@
+{{ "Your new management link" if rotated else "Manage your rate alerts" }}
+
+{% if rotated %}Your previous links no longer work. Use this one from now on.{% else %}Use this private link to view, pause, edit or delete your alerts. No password needed.{% endif %}
+
+{{ manage_url }}
+{% if alerts %}
+
+Your alerts:
+{% for a in alerts %}
+  - {{ a.pair }} {{ a.condition }} {{ a.threshold }} [{{ a.status }}]
+{% endfor %}
+{% endif %}
+
+Keep this link private: anyone with it can manage your alerts.
+
+--
+{{ app_name }} · {{ app_url }}

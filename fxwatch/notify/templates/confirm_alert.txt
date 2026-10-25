@@ -1,0 +1,16 @@
+Confirm your rate alert
+
+Someone (hopefully you) asked {{ app_name }} to email this address when:
+
+  {{ alert.pair }} {{ alert.condition }} {{ alert.threshold }}{% if alert.label %} ("{{ alert.label }}"){% endif %}
+
+{{ "Recurring alert" if alert.recurring else "One-time alert" }}, priced from the {{ alert.source }}, active until {{ alert.expires }}.
+
+Confirm it here:
+{{ confirm_url }}
+
+This link expires in {{ hours }} hours. If you didn't request this, ignore this email;
+nothing will be sent to you.
+
+--
+{{ app_name }} · {{ app_url }}

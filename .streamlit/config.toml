@@ -1,0 +1,30 @@
+[server]
+headless = true
+runOnSave = false
+# Serves ./static at /app/static (used for the bundled flag font).
+enableStaticServing = true
+
+[browser]
+gatherUsageStats = false
+
+[client]
+toolbarMode = "minimal"
+
+[theme]
+baseRadius = "0.6rem"
+# The flag font only contains country-flag glyphs (see unicodeRange below), so every
+# other character falls through to Streamlit's default sans-serif.
+font = "Twemoji Country Flags, Source Sans, sans-serif"
+
+# Windows has no colour flag emoji; without this font flags render as letters ("ZA").
+# Font: country-flag-emoji-polyfill (MIT), artwork: Twemoji (CC-BY 4.0).
+[[theme.fontFaces]]
+family = "Twemoji Country Flags"
+url = "app/static/fonts/TwemojiCountryFlags.woff2"
+unicodeRange = "U+1F1E6-1F1FF, U+1F3F4, U+E0062-E0063, U+E0065, U+E0067, U+E006C, U+E006E, U+E0073-E0074, U+E0077, U+E007F"
+
+[theme.light]
+primaryColor = "#1769aa"
+
+[theme.dark]
+primaryColor = "#3987e5"

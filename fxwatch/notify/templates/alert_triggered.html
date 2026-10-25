@@ -1,0 +1,40 @@
+{% extends "_layout.html" %}
+{% from "_button.html" import button %}
+{% block body %}
+<p style="margin:0 0 6px;color:#6b7385;font-size:13px;text-transform:uppercase;letter-spacing:.6px;">Rate alert{% if alert.label %} · {{ alert.label }}{% endif %}</p>
+<h1 style="font-size:21px;margin:0 0 18px;">{{ alert.base.flag }} {{ alert.pair }} {{ direction }} {{ alert.threshold }}</h1>
+
+<table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="border:1px solid #e3e7ee;border-radius:10px;">
+  <tr>
+    <td style="padding:16px 18px;">
+      <div style="color:#6b7385;font-size:13px;">1 {{ alert.base.code }} =</div>
+      <div style="font-size:30px;font-weight:700;color:#0f3d5e;">{{ rate }} {{ alert.quote.code }}</div>
+      <div style="color:#6b7385;font-size:13px;">1 {{ alert.quote.code }} = {{ inverse }} {{ alert.base.code }}</div>
+    </td>
+    <td style="padding:16px 18px;text-align:right;color:#6b7385;font-size:13px;vertical-align:top;">
+      Your threshold<br><strong style="color:#1d2433;font-size:16px;">{{ alert.threshold }}</strong>
+    </td>
+  </tr>
+</table>
+
+{% if stats %}
+<table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="margin-top:16px;font-size:14px;">
+  <tr><td colspan="2" style="padding-bottom:6px;font-weight:600;">Last 90 days</td></tr>
+  <tr><td style="color:#6b7385;padding:3px 0;">Low / high</td><td align="right">{{ stats.low | rate }} / {{ stats.high | rate }}</td></tr>
+  <tr><td style="color:#6b7385;padding:3px 0;">Average</td><td align="right">{{ stats.mean | rate }}</td></tr>
+  <tr><td style="color:#6b7385;padding:3px 0;">Change</td><td align="right">{{ "%+.2f" | format(stats.change_pct) }}%</td></tr>
+  <tr><td style="color:#6b7385;padding:3px 0;">Today vs. the period</td><td align="right">higher than {{ "%.0f" | format(stats.percentile) }}% of days</td></tr>
+</table>
+{% endif %}
+
+<p style="margin:16px 0 0;color:#6b7385;font-size:13px;">
+  {{ source.name }} rate for {{ rate_date }}{% if derived %}, cross rate computed via {{ source.base }}{% endif %}.
+  {% if alert.recurring %}You'll be notified again after the rate moves back and returns.{% else %}This one-time alert is now complete.{% endif %}
+</p>
+{% for note in notes %}
+<p style="margin:10px 0 0;padding:10px 12px;background:#fff8e6;border-radius:6px;font-size:13px;color:#6b5000;">{{ note }}</p>
+{% endfor %}
+
+{{ button(manage_url, "Manage my alerts") }}
+{% endblock %}
+{% block footer %}{{ source.attribution }}<br>{% endblock %}

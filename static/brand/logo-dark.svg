@@ -1,0 +1,7 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 232 64" role="img" aria-label="FX Watch">
+  <rect width="64" height="64" rx="14" fill="#1769aa"/>
+  <line x1="11" y1="30" x2="53" y2="30" stroke="#a9c7de" stroke-width="2.5" stroke-linecap="round"/>
+  <polyline points="11,45 21,38 29,42 38.5,30 46,22 53,19" fill="none" stroke="#ffffff" stroke-width="4.5" stroke-linecap="round" stroke-linejoin="round"/>
+  <circle cx="38.5" cy="30" r="5.5" fill="#f5b041" stroke="#1769aa" stroke-width="2.5"/>
+  <text x="80" y="43" font-family="'Segoe UI', 'Helvetica Neue', Helvetica, Arial, sans-serif" font-size="32" letter-spacing="-0.5" fill="#f0efec"><tspan font-weight="700">FX</tspan><tspan font-weight="400" dx="8">Watch</tspan></text>
+</svg>

@@ -1,0 +1,58 @@
+# Full local stack: Postgres + Streamlit app + worker + Mailpit (catches outgoing email).
+#   docker compose up --build
+#   App:     http://localhost:8501
+#   Mailbox: http://localhost:8025
+services:
+  db:
+    image: postgres:16-alpine
+    environment:
+      POSTGRES_USER: fxwatch
+      POSTGRES_PASSWORD: fxwatch
+      POSTGRES_DB: fxwatch
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U fxwatch"]
+      interval: 5s
+      retries: 10
+
+  mailpit:
+    image: axllent/mailpit:latest
+    ports:
+      - "8025:8025"
+
+  app:
+    build: .
+    env_file:
+      - path: .env
+        required: false
+    environment: &common
+      DATABASE_URL: postgresql+psycopg://fxwatch:fxwatch@db:5432/fxwatch
+      APP_BASE_URL: http://localhost:8501
+      MAIL_BACKEND: smtp
+      SMTP_HOST: mailpit
+      SMTP_PORT: "1025"
+      SMTP_STARTTLS: "false"
+      SMTP_USERNAME: ""
+      MAIL_FROM: alerts@fxwatch.local
+    ports:
+      - "8501:8501"
+    depends_on:
+      db:
+        condition: service_healthy
+
+  worker:
+    build: .
+    env_file:
+      - path: .env
+        required: false
+    environment:
+      <<: *common
+      WORKER_INTERVAL_MINUTES: "60"
+    command: ["python", "-m", "fxwatch", "serve"]
+    depends_on:
+      db:
+        condition: service_healthy
+
+volumes:
+  pgdata:

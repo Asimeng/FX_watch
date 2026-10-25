@@ -1,0 +1,12 @@
+{% extends "_layout.html" %}
+{% from "_button.html" import button %}
+{% block body %}
+<h1 style="font-size:20px;margin:0 0 14px;">Your alert expires soon</h1>
+<p style="margin:0 0 12px;">
+  Your alert <strong>{{ alert.base.flag }} {{ alert.pair }}</strong> {{ alert.condition }} <strong>{{ alert.threshold }}</strong>
+  {% if alert.label %}(“{{ alert.label }}”) {% endif %}expires on <strong>{{ alert.expires }}</strong>.
+</p>
+<p style="margin:0;">Want to keep watching? Extend it with one click.</p>
+{{ button(extend_url, "Extend alert") }}
+<p style="margin:0;color:#6b7385;font-size:13px;">If you do nothing, the alert simply stops. We'll keep no data beyond your email address and remaining alerts.</p>
+{% endblock %}

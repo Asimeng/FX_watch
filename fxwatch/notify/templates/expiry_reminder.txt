@@ -1,0 +1,13 @@
+Your alert expires soon
+
+Your alert {{ alert.pair }} {{ alert.condition }} {{ alert.threshold }}{% if alert.label %} ("{{ alert.label }}"){% endif %} expires on {{ alert.expires }}.
+
+Extend it here:
+{{ extend_url }}
+
+If you do nothing, the alert simply stops.
+
+Unsubscribe from all alerts: {{ unsubscribe_url }}
+
+--
+{{ app_name }} · {{ app_url }}

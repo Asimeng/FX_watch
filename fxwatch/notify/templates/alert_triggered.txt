@@ -1,0 +1,28 @@
+RATE ALERT{% if alert.label %}: {{ alert.label }}{% endif %}
+
+{{ alert.pair }} {{ direction }} {{ alert.threshold }}
+
+  1 {{ alert.base.code }} = {{ rate }} {{ alert.quote.code }}
+  1 {{ alert.quote.code }} = {{ inverse }} {{ alert.base.code }}
+  Your threshold: {{ alert.threshold }}
+{% if stats %}
+
+Last 90 days
+  Low / high:   {{ stats.low | rate }} / {{ stats.high | rate }}
+  Average:      {{ stats.mean | rate }}
+  Change:       {{ "%+.2f" | format(stats.change_pct) }}%
+  Today is higher than {{ "%.0f" | format(stats.percentile) }}% of days in the period.
+{% endif %}
+
+{{ source.name }} rate for {{ rate_date }}{% if derived %} (cross rate via {{ source.base }}){% endif %}.
+{% if alert.recurring %}You'll be notified again after the rate moves back and returns.{% else %}This one-time alert is now complete.{% endif %}
+{% for note in notes %}
+
+Note: {{ note }}
+{% endfor %}
+
+Manage your alerts: {{ manage_url }}
+Unsubscribe from all alerts: {{ unsubscribe_url }}
+
+Rates are mid-market reference rates for information only and are not an offer to trade.
+{{ source.attribution }}

@@ -1,0 +1,15 @@
+{% extends "_layout.html" %}
+{% from "_button.html" import button %}
+{% block body %}
+<h1 style="font-size:20px;margin:0 0 14px;">Confirm your rate alert</h1>
+<p style="margin:0 0 12px;">Someone (hopefully you) asked {{ app_name }} to email this address when:</p>
+<p style="margin:0 0 4px;padding:14px 16px;background:#f3f7fb;border-left:4px solid #1769aa;border-radius:4px;font-size:16px;">
+  <strong>{{ alert.base.flag }} {{ alert.pair }}</strong> {{ alert.condition }} <strong>{{ alert.threshold }}</strong>
+  {% if alert.label %}<br><span style="color:#6b7385;font-size:13px;">“{{ alert.label }}”</span>{% endif %}
+</p>
+<p style="margin:8px 0 0;color:#6b7385;font-size:13px;">
+  {{ "Recurring alert" if alert.recurring else "One-time alert" }} · priced from the {{ alert.source }} · active until {{ alert.expires }}
+</p>
+{{ button(confirm_url, "Confirm alert") }}
+<p style="margin:0;color:#6b7385;font-size:13px;">This link expires in {{ hours }} hours. If you didn't request this, ignore this email; nothing will be sent to you.</p>
+{% endblock %}
